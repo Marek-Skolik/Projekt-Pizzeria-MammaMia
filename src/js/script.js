@@ -52,17 +52,18 @@
     menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
   };
 
-  class Product{
-    constructor(id, data){
+  class Product {
+    constructor(id, data) {
       const thisProduct = this;
       thisProduct.id = id;
       thisProduct.data = data;
 
       thisProduct.renderInMenu();
+      thisProduct.initAccordion();
 
       console.log('new Product:', thisProduct);
     }
-    renderInMenu(){
+    renderInMenu() {
       const thisProduct = this;
 
       /* generate HTML based on template */
@@ -74,25 +75,38 @@
       /* add element to menu */
       menuContainer.appendChild(thisProduct.element);
     }
-  };
+    initAccordion(){
+      const thisProduct = this;
+
+      const productHeader = thisProduct.element.querySelector('.product__header');
+      productHeader.addEventListener('click', function(){
+        thisProduct.element.classList.toggle('active');
+
+        const productsActive = document.querySelectorAll('.product.active');
+        for(const product of productsActive) {
+          if(product !== thisProduct.element) product.classList.remove('active');
+        }
+      });
+    }
+  }
 
   const app = {
-    initMenu: function(){
+    initMenu: function () {
       const thisApp = this;
 
       console.log('thisApp.data', thisApp.data);
-      for(let productData in thisApp.data.products){
+      for (let productData in thisApp.data.products) {
         new Product(productData, thisApp.data.products[productData]);
       }
     },
 
-    initData: function(){
+    initData: function () {
       const thisApp = this;
 
       thisApp.data = dataSource;
     },
 
-    init: function(){
+    init: function () {
       const thisApp = this;
       console.log('*** App starting ***');
       console.log('thisApp:', thisApp);
