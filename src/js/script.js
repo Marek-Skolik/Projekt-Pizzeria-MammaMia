@@ -53,7 +53,7 @@
     },
     // CODE ADDED END
   };
-  
+
   const classNames = {
     menuProduct: {
       wrapperActive: 'active',
@@ -65,7 +65,7 @@
     },
     // CODE ADDED END
   };
-  
+
   const settings = {
     amountWidget: {
       defaultValue: 1,
@@ -78,7 +78,7 @@
     },
     // CODE ADDED END
   };
-  
+
   const templates = {
     menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
     // CODE ADDED START
@@ -211,7 +211,7 @@
           }
         }
       }
-      thisProduct.priceSingle  = price;
+      thisProduct.priceSingle = price;
       /* multiply price by amount */
       price *= thisProduct.amountWidget.value;
 
@@ -228,13 +228,13 @@
       });
     }
 
-    addToCart(){
+    addToCart() {
       const thisProduct = this;
 
       app.cart.add(thisProduct.prepareCartProduct());
     }
 
-    prepareCartProduct(){
+    prepareCartProduct() {
       const thisProduct = this;
 
       const productSummary = {
@@ -248,7 +248,7 @@
       return productSummary;
     }
 
-    prepareCartProductParams(){
+    prepareCartProductParams() {
       const thisProduct = this;
 
       // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
@@ -256,25 +256,25 @@
       const params = {};
 
       // for every category (param)...
-      for(let paramId in thisProduct.data.params) {
+      for (let paramId in thisProduct.data.params) {
         // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
         const param = thisProduct.data.params[paramId];
         //console.log(paramId, param);
-        
+
         // create category param in params const eg. params = { ingredients: { name : 'Ingredients', options: {}}}
         params[paramId] = {
           label: param.label,
           options: {}
         };
-    
+
         // for every option in this category
-        for(let optionId in param.options) {
+        for (let optionId in param.options) {
           // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
           const option = param.options[optionId];
           //console.log(optionId, option);
           const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
 
-          if(optionSelected) {
+          if (optionSelected) {
             params[paramId].options[optionId] = option.label;
           }
         }
@@ -344,8 +344,8 @@
     }
   }
 
-  class Cart{
-    constructor(element){
+  class Cart {
+    constructor(element) {
       const thisCart = this;
 
       thisCart.products = [];
@@ -356,7 +356,7 @@
       console.log('new cart', thisCart);
     }
 
-    getElements(element){
+    getElements(element) {
       const thisCart = this;
 
       thisCart.dom = {};
@@ -366,25 +366,93 @@
       thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList);
     }
 
-    initActions(){
+    initActions() {
       const thisCart = this;
 
       thisCart.dom.toggleTrigger.addEventListener('click', function () {
-        thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);});
+        thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
+      });
     }
 
-    add(menuProduct){
+    add(menuProduct) {
       const thisCart = this;
 
       const generatedHTML = templates.cartProduct(menuProduct);
       const generatedDOM = utils.createDOMFromHTML(generatedHTML);
       thisCart.dom.productList.appendChild(generatedDOM);
 
+      thisCart.products.push(new CartProduct(menuProduct, generatedDOM));
 
-      console.log('adding product', menuProduct);
+      thisCart.update();
+    }
+
+    update(){
+      const thisCart = this;
+
+      const deliveryFee = settings.cart.defaultDeliveryFee;
+      let totalNumber = 0;
+      let subtotalPrice = 0;
+
+      for (let product of thisCart.products){
+        totalNumber += product.amount;
+        subtotalPrice += product.price;
+      }
+
+      thisCart.totalPrice = 0;
+
+      if(subtotalPrice != 0) {
+        thisCart.totalPrice = subtotalPrice + deliveryFee;
+        thisCart.dom.deliveryFee.innerHTML = deliveryFee;
+      } else {
+        thisCart.totalPrice = 0;
+        thisCart.dom.deliveryFee.innerHTML = 0;
+      }
+
+      thisCart.dom.totalNumber.innerHTML = totalNumber;
+      thisCart.dom.subtotalPrice.innerHTML = subtotalPrice;
+      for (let item of thisCart.dom.totalPrice) {
+        item.innerHTML = totalPrice;
+      }
     }
   }
 
+  class CartProduct {
+    constructor(menuProduct, element) {
+      const thisCartProduct = this;
+
+      thisCartProduct.id = menuProduct.id,
+      thisCartProduct.name = menuProduct.name,
+      thisCartProduct.amount = menuProduct.amount,
+      thisCartProduct.price = menuProduct.price,
+      thisCartProduct.priceSingle = menuProduct.priceSingle,
+
+      thisCartProduct.getElements(element);
+      thisCartProduct.initAmountWidget();
+    }
+
+    getElements(element){
+      const thisCartProduct = this;
+
+      thisCartProduct.dom = {
+        wrapper: element,
+        amountWidgetElem: element.querySelector(select.cartProduct.amountWidget),
+        price: element.querySelector(select.cartProduct.price),
+        edit: element.querySelector(select.cartProduct.edit),
+        remove: element.querySelector(select.cartProduct.remove),
+      };
+    }
+
+    initAmountWidget(){
+      const thisCartProduct = this;
+
+      thisCartProduct.amountWidget = new AmountWidget(thisCartProduct.dom.amountWidgetElem);
+      thisCartProduct.dom.amountWidgetElem.addEventListener('updated', function(){
+        thisCartProduct.amount = thisCartProduct.amountWidget.value;
+        thisCartProduct.price = thisCartProduct.priceSingle * thisCartProduct.amount;
+        thisCartProduct.dom.price.innerHTML = thisCartProduct.price;
+      });
+    }
+  }
 
   const app = {
     initMenu: function () {
@@ -415,7 +483,7 @@
       thisApp.initCart();
     },
 
-    initCart: function(){
+    initCart: function () {
       const thisApp = this;
 
       const cartElem = document.querySelector(select.containerOf.cart);
