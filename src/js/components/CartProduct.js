@@ -1,5 +1,5 @@
-import select from './settings.js';
-import AmountWidget from './components/AmountWidget.js';
+import {select} from '../settings.js';
+import AmountWidget from '../components/AmountWidget.js';
 
 class CartProduct {
   constructor(menuProduct, element) {
@@ -80,6 +80,5 @@ class CartProduct {
     return getProductSummary;
   }
 }
-console.log(CartProduct);
 
 export default CartProduct;
