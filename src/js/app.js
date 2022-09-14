@@ -7,8 +7,8 @@ const app = {
     const thisApp = this;
 
     //console.log('thisApp.data', thisApp.data);
-    for (let productData in thisApp.data.products) {
-      new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
+    for (let productData of thisApp.data.products) {
+      new Product(productData.id, productData);
     }
   },
 
