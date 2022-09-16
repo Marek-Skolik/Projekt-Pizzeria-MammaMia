@@ -1,5 +1,5 @@
 import {settings, select} from '../settings.js';
-import BaseWidget from '../BaseWidget.js';
+import BaseWidget from './BaseWidget.js';
 
 class AmountWidget extends BaseWidget{
   constructor(element) {
@@ -10,8 +10,8 @@ class AmountWidget extends BaseWidget{
     thisWidget.getElements(element);
     thisWidget.initActions();
 
-    console.log('AmountWidget:', thisWidget);
-    console.log('constructor arguments:', element);
+  //console.log('AmountWidget:', thisWidget);
+  //console.log('constructor arguments:', element);
   }
 
   getElements() {
@@ -37,14 +37,14 @@ class AmountWidget extends BaseWidget{
   initActions() {
     const thisWidget = this;
 
-    dom.addEventListener('change', function () {
-      thisWidget.setValue(dom.value);
+    thisWidget.dom.input.addEventListener('change', function () {
+      thisWidget.setValue(this.Widgetdom.value);
     });
-    dom.addEventListener('click', function (event) {
+    thisWidget.dom.linkDecrease.addEventListener('click', function (event) {
       event.preventDefault();
       thisWidget.setValue(thisWidget.value - 1);
     });
-    dom.addEventListener('click', function (event) {
+    thisWidget.dom.linkIncrease.addEventListener('click', function (event) {
       event.preventDefault();
       thisWidget.setValue(thisWidget.value + 1);
     });
