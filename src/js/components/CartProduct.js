@@ -26,14 +26,14 @@ class CartProduct {
 
     thisCartProduct.dom.amountWidget =
       thisCartProduct.dom.wrapper.querySelector(select.cartProduct.amountWidget
-        );
-      thisCartProduct.dom.price = thisCartProduct.dom.wrapper.querySelector(
-        select.cartProduct.price
       );
-      thisCartProduct.dom.edit = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.edit
-      );
-      thisCartProduct.dom.remove = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.remove
-      );
+    thisCartProduct.dom.price = thisCartProduct.dom.wrapper.querySelector(
+      select.cartProduct.price
+    );
+    thisCartProduct.dom.edit = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.edit
+    );
+    thisCartProduct.dom.remove = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.remove
+    );
   }
 
   initAmountWidget() {
@@ -78,19 +78,18 @@ class CartProduct {
     });
   }
 
-  getData() {
+  getData(){
     const thisCartProduct = this;
 
-    const getParamsIds = function () {
-      const paramObjects = {};
-      for (let paramId in thisCartProduct.params) {
-        paramObjects[paramId] = [];
-        for (let optionID in thisCartProduct.params[paramId].options) {
-          paramObjects[paramId].push(optionID);
-        }
-      }
-      return paramObjects;
+    const getProductSummary = {
+      id: thisCartProduct.id,
+      amount: thisCartProduct.amount,
+      price: thisCartProduct.price,
+      priceSingle: thisCartProduct.priceSingle,
+      name: thisCartProduct.name,
+      params: thisCartProduct.params
     };
+    return getProductSummary;
   }
 }
 
