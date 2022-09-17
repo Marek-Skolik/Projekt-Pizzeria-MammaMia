@@ -10,6 +10,7 @@ class CartProduct {
     thisCartProduct.amount = menuProduct.amount,
     thisCartProduct.price = menuProduct.price,
     thisCartProduct.priceSingle = menuProduct.priceSingle,
+    thisCartProduct.params = menuProduct.params;
 
     thisCartProduct.getElements(element);
     thisCartProduct.initAmountWidget();
@@ -19,23 +20,34 @@ class CartProduct {
   getElements(element) {
     const thisCartProduct = this;
 
-    thisCartProduct.dom = {
-      wrapper: element,
-      amountWidgetElem: element.querySelector(select.cartProduct.amountWidget),
-      price: element.querySelector(select.cartProduct.price),
-      edit: element.querySelector(select.cartProduct.edit),
-      remove: element.querySelector(select.cartProduct.remove),
-    };
+    thisCartProduct.dom = {};
+
+    thisCartProduct.dom.wrapper = element;
+
+    thisCartProduct.dom.amountWidget =
+      thisCartProduct.dom.wrapper.querySelector(select.cartProduct.amountWidget
+        );
+      thisCartProduct.dom.price = thisCartProduct.dom.wrapper.querySelector(
+        select.cartProduct.price
+      );
+      thisCartProduct.dom.edit = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.edit
+      );
+      thisCartProduct.dom.remove = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.remove
+      );
   }
 
   initAmountWidget() {
     const thisCartProduct = this;
+    thisCartProduct.amountWidget = new AmountWidget(
+      thisCartProduct.dom.amountWidget
+    );
 
-    thisCartProduct.amountWidget = new AmountWidget(thisCartProduct.dom.amountWidgetElem);
-    thisCartProduct.dom.amountWidgetElem.addEventListener('updated', function () {
+    thisCartProduct.dom.amountWidget.addEventListener('updated', function () {
       thisCartProduct.amount = thisCartProduct.amountWidget.value;
-      thisCartProduct.price = thisCartProduct.priceSingle * thisCartProduct.amount;
+      thisCartProduct.price =
+        thisCartProduct.amount * thisCartProduct.priceSingle;
       thisCartProduct.dom.price.innerHTML = thisCartProduct.price;
+      console.log('widget', thisCartProduct.amountWidget);
     });
   }
 
@@ -66,18 +78,19 @@ class CartProduct {
     });
   }
 
-  getData(){
+  getData() {
     const thisCartProduct = this;
 
-    const getProductSummary = {
-      id: thisCartProduct.id,
-      amount: thisCartProduct.amount,
-      price: thisCartProduct.price,
-      priceSingle: thisCartProduct.priceSingle,
-      name: thisCartProduct.name,
-      params: thisCartProduct.params
+    const getParamsIds = function () {
+      const paramObjects = {};
+      for (let paramId in thisCartProduct.params) {
+        paramObjects[paramId] = [];
+        for (let optionID in thisCartProduct.params[paramId].options) {
+          paramObjects[paramId].push(optionID);
+        }
+      }
+      return paramObjects;
     };
-    return getProductSummary;
   }
 }
 
