@@ -8,30 +8,46 @@ class BaseWidget{
     thisWidget.correctValue = initialValue;
   }
 
-  setValue(value){
+  get value(){
     const thisWidget = this;
-    const newValue = thisWidget.parseValue(value);
+
+    return thisWidget.correctValue;
+  }
+
+  set value(value){
+    const thisWidget = this;
     
-    if(thisWidget.correctValue != newValue && thisWidget.isValid(newValue)){
+    const newValue = thisWidget.parseValue(value);
+
+    /* TODO: Add validation */
+    if(newValue != thisWidget.correctValue && thisWidget.isValid(newValue)){
       thisWidget.correctValue = newValue;
       thisWidget.announce();
     }
+
     thisWidget.renderValue();
+  }
+
+  setValue(value){
+    const thisWidget = this;
+    
+    thisWidget.value = value;
   }
 
   parseValue(value){
     return parseInt(value);
   }
 
-  isValid(value){ 
+  isValid(value){
     return !isNaN(value);
-
   }
+
   renderValue(){
     const thisWidget = this;
-    thisWidget.dom.wrapper.innerHTML = thisWidget.value;
 
+    thisWidget.dom.wrapper.innerHTML = thisWidget.value;
   }
+
   announce(){
     const thisWidget = this;
 
