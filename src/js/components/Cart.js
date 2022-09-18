@@ -66,7 +66,6 @@ class Cart{
 
     thisCart.update();
   }
-
   update(){
     const thisCart = this;
 
@@ -82,7 +81,7 @@ class Cart{
     }
 
     if(thisCart.subtotalPrice != 0){
-      thisCart.totalPrice = thisCart.subtotalPrice + deliveryFee;
+      thisCart.totalPrice = thisCart.totalPrice + deliveryFee;
       thisCart.dom.deliveryFee.innerHTML = deliveryFee;
     } else {
       thisCart.totalPrice = 0;
