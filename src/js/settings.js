@@ -51,6 +51,7 @@ export const select = {
     address: '.order-confirmation input[name=address]',
     phone: '.order-confirmation input[name=phone]',
     submit: '.order-confirmation button',
+    checkbox: '.booking-options .checkbox input',
   },
 
   nav: {
