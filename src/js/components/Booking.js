@@ -73,6 +73,8 @@ class Booking {
       });
   }
 
+
+
   initTables(clickedTable) {
     const thisBooking = this;
     
@@ -199,6 +201,33 @@ class Booking {
     }
   }
 
+  parseData(bookings, eventsCurrent, eventsRepeat){
+    const thisBooking = this;
+
+    thisBooking.booked = {};
+
+    for(let item of bookings){
+      thisBooking.makedBooked(item.date, item.hour, item.duration, item.table);
+    }
+
+    for(let item of eventsCurrent){
+      thisBooking.makedBooked(item.date, item.hour, item.duration, item.table);
+    }
+
+    const minDate = thisBooking.datePickerElem.minDate;
+    const maxDate = thisBooking.datePickerElem.maxDate;
+
+    for(let item of eventsRepeat){
+      if(item.repeat == 'daily'){
+        for(let loopDate = minDate; loopDate <= maxDate; loopDate = utils.addDays(loopDate, 1)){
+          thisBooking.makedBooked(utils.dateToStr(loopDate), item.hour, item.duration, item.table);
+        }
+      }
+    }
+
+    thisBooking.updateDOM();
+  }
+
 
   sendBooking() {
     const thisBooking = this;
@@ -235,7 +264,7 @@ class Booking {
 
     fetch(url, options)
       .then(function (response) {
-        return response.json()
+        return response.json();
       });
   }
 
