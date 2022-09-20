@@ -1,4 +1,4 @@
-import { templates, select, settings} from '../settings.js';
+import { templates, select, settings, classNames} from '../settings.js';
 import utils from '../utils.js';
 import AmountWidget from './AmountWidget.js';
 import DatePicker from './DatePicker.js';
@@ -11,6 +11,7 @@ class Booking {
     thisBooking.render(element);
     thisBooking.initWidgets();
     thisBooking.getDate();
+    thisBooking.initTables();
   }
 
   getDate(){
@@ -20,7 +21,7 @@ class Booking {
     const endDateParam = settings.db.dateEndParamKey + '=' + utils.dateToStr(thisBooking.datePickerElem.maxDate);
 
     const params = {
-      bookings : [
+      booking : [
         startDateParam,
         endDateParam,
       ],
@@ -38,11 +39,11 @@ class Booking {
     //console.log('getData params', params);
 
     const urls = {
-      booking:       settings.db.url + '/' + settings.db.booking 
-                                     + '?' + params.bookings.join('&'),
-      eventsCurrent: settings.db.url + '/' + settings.db.event   
+      booking:       settings.db.url + '/' + settings.db.booking
+                                     + '?' + params.booking.join('&'),
+      eventsCurrent: settings.db.url + '/' + settings.db.event
                                      + '?' + params.eventsCurrent.join('&'),
-      eventsRepeat:  settings.db.url + '/' + settings.db.event   
+      eventsRepeat:  settings.db.url + '/' + settings.db.event  
                                      + '?' + params.eventsRepeat.join('&'),
     };
 
@@ -70,6 +71,41 @@ class Booking {
       });
   }
 
+  initTables(event) {
+    const clickedElement = event;
+    const thisBooking = this;
+    thisBooking.selectedTable = '';
+    
+
+    if (clickedElement.classList.contains('table')) {
+      if (clickedElement.classList.contains(classNames.booking.tableBooked)) {
+        alert('This table is booked');
+        return;
+      }
+      if (!clickedElement.classList.contains(classNames.booking.tableSelected)) {
+        for (let table of thisBooking.dom.tables) {
+          table.classList.remove(classNames.booking.tableSelected);
+
+          thisBooking.selectedTable = '';
+
+          clickedElement.classList.add(classNames.booking.tableSelected);
+
+          const selectedTableId = clickedElement.getAttribute('data-table');
+
+          thisBooking.selectedTable += selectedTableId;
+          console.log(thisBooking.selectedTable);
+        }
+      } else {
+
+        thisBooking.selectedTable = clickedElement.getAttribute('data-table');
+
+        clickedElement.classList.remove(classNames.booking.tableSelected);
+
+        thisBooking.selectedTable = '';
+      }
+    }
+  }
+
   render(element){
     const thisBooking = this;
     const generatedHtml = templates.bookingWidget();
@@ -80,10 +116,15 @@ class Booking {
     thisBooking.dom.hoursAmount = thisBooking.dom.wrapper.querySelector(select.widgets.booking.hoursAmount);
     thisBooking.dom.datePickerInput = thisBooking.dom.wrapper.querySelector(select.widgets.datePicker.wrapper);
     thisBooking.dom.hourPickerInput = thisBooking.dom.wrapper.querySelector(select.widgets.hourPicker.wrapper);
+    thisBooking.dom.tables = thisBooking.dom.wrapper.querySelectorAll(select.widgets.booking.tables);
+    thisBooking.dom.floor = thisBooking.dom.wrapper.querySelector(select.containerOf.floor);
   }
 
   initWidgets(){
     const thisBooking = this;
+
+    thisBooking.datePickerElem = new DatePicker(thisBooking.dom.datePickerInput); 
+    thisBooking.hourPickerElem = new HourPicker(thisBooking.dom.hourPickerInput);
 
     thisBooking.peopleAmount = new AmountWidget(thisBooking.dom.peopleAmount);
     thisBooking.dom.peopleAmount.addEventListener('updated', function(){});
@@ -91,8 +132,10 @@ class Booking {
     thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount);
     thisBooking.dom.hoursAmount.addEventListener('updated', function(){});
 
-    thisBooking.datePickerElem = new DatePicker(thisBooking.dom.datePickerInput); 
-    thisBooking.hourPickerElem = new HourPicker(thisBooking.dom.hourPickerInput);
+    thisBooking.dom.floor.addEventListener('click', function(event){
+      thisBooking.initTables(event);
+    });
+
   }
 }
 
