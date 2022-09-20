@@ -46,6 +46,13 @@ export const select = {
       tables: '.floor-plan .table',
     },
   },
+  booking: {
+    tableSelected: '.table.selected',
+    address: '.order-confirmation input[name=address]',
+    phone: '.order-confirmation input[name=phone]',
+    submit: '.order-confirmation button',
+  },
+
   nav: {
     links: '.main-nav a',
   },
