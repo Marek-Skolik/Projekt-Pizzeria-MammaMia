@@ -9,7 +9,6 @@ export const select = {
     cart: '#cart',
     pages: '#pages',
     booking: '.booking-wrapper',
-    home: '.home-wrapper',
     floor: '.floor-plan',
   },
   all: {
