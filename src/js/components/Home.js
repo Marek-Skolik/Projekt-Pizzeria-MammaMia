@@ -13,13 +13,15 @@ class Home{
     const generatedHTML = templates.homeWidget();
     thisHome.dom = {};
     thisHome.dom.wrapper = element;
-    thisHome.dom.innerHTML = generatedHTML;
+    thisHome.dom.wrapper.innerHTML = generatedHTML;
   }
 
   initWidgets(){
     const elem = document.querySelector('.main-carousel');
 
+    //eslint-disable-next-line no-undef
     new Flickity (elem, {
+      //options
       cellAlign: 'left',
       contain: true,
       autoPlay: true,
