@@ -13,7 +13,7 @@ class Home{
     const generatedHTML = templates.homeWidget();
     thisHome.dom = {};
     thisHome.dom.wrapper = element;
-    thisHome.dom.innerHTML = generatedHTML;
+    thisHome.dom.wrapper.innerHTML = generatedHTML;
   }
 
   initWidgets(){

@@ -11,7 +11,7 @@ export const select = {
     pages: '#pages',
     booking: '.booking-wrapper',
     floor: '.floor-plan',
-    home: 'home-wrapper',
+    home: '.home-wrapper',
   },
   all: {
     menuProducts: '#product-list > .product',
