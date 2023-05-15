@@ -1,3 +1,3 @@
 version 2.4
 
-https://pizza-mammamia-p.herokuapp.com/#/home
+https://projekt-pizzeria-mammamia.marek26.repl.co
